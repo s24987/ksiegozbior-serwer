@@ -56,7 +56,7 @@ module.exports.validateUser = () => [
 
     body('birthdate')
         .notEmpty({errorMessage: customMessages.notEmpty})
-        .isLength({min: 10, max: 10})
+        .isLength({min: 10, max: 10}).withMessage('Birthdate must be 10 characters long')
         .custom(value => {
             const isRightFormat = dateRegex.test(value);
             if (!isRightFormat) return false;
