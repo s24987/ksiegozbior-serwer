@@ -28,7 +28,7 @@ module.exports.validateAuthor = () => [
         })
         .toDate()
         .withMessage(customMessages.invalidDate)
-]
+];
 
 module.exports.validateUser = () => [
     body('username')
@@ -72,4 +72,37 @@ module.exports.validateGenre = () => [
         .trim()
         .notEmpty({errorMessage: customMessages.notEmpty})
         .isLength({min: 3, max: 255}).withMessage('Genre name must be between 3 and 255 characters long')
+];
+
+module.exports.validateBook = () => [
+    body('authorId')
+        .isInt({gt: 0}).withMessage('Author ID must be a positive integer')
+        .notEmpty({errorMessage: customMessages.notEmpty}),
+
+    body('title')
+        .isString()
+        .trim()
+        .notEmpty({errorMessage: customMessages.notEmpty})
+        .isLength({min: 3, max: 255}).withMessage('Title must be between 3 and 255 characters long'),
+
+    body('format')
+        .isString()
+        .isIn(['paper', 'ebook', 'audiobook']).withMessage('Format must be one of: paper, ebook, electronic'),
+
+    body('pageCount')
+        .optional()
+        .isInt({gt: 0}).withMessage('Page count must be a positive integer'),
+
+    body('listeningLength')
+        .optional()
+        .isInt({gt: 0}).withMessage('Listening length must be a positive integer'),
+
+    body('narrator')
+        .optional()
+        .isString()
+        .isLength({max: 255}).withMessage('Narrator name must not exceed 255 characters'),
+
+    body('genreId')
+        .isInt({gt: 0}).withMessage('Genre ID must be a positive integer')
+        .notEmpty({errorMessage: customMessages.notEmpty})
 ];
