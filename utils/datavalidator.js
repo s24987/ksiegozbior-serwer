@@ -16,7 +16,7 @@ module.exports.validateAuthor = () => [
         .isLength({min: 3, max: 255}).withMessage('Name must be between 3 and 255 characters long'),
 
     body('birthdate')
-        .optional({values: 'falsy'})
+        .optional()
         .isLength({min: 10, max: 10}).withMessage('Birthdate must be 10 characters long')
         .custom(value => {
             if (value) {

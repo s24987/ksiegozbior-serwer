@@ -17,7 +17,7 @@ router.get('/', function (req, res, next) {
 
 /* POST a new author */
 router.post('/', validateAuthor(), function (req, res, next) {
-    const {name, birthdate} = req.body;
+    const {name, birthdate=null} = req.body;
 
     // check if name and birthday are valid
     const validationErrors = validationResult(req);
