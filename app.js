@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const authorsRouter = require('./routes/authors');
 const usersRouter = require('./routes/users');
+const genresRouter = require('./routes/genres');
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use(cors())
 
 app.use('/authors', authorsRouter);
 app.use('/users', usersRouter);
+app.use('/genres', genresRouter);
 
 module.exports = app;

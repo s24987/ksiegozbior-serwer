@@ -65,3 +65,11 @@ module.exports.validateUser = () => [
         .toDate()
         .withMessage('Birthdate must be a valid date')
 ];
+
+module.exports.validateGenre = () => [
+    body('name')
+        .isString()
+        .trim()
+        .notEmpty({errorMessage: customMessages.notEmpty})
+        .isLength({min: 3, max: 255}).withMessage('Genre name must be between 3 and 255 characters long')
+];
