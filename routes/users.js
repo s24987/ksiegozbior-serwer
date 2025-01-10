@@ -1,9 +1,37 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const db = require("../database");
+const {validateUser} = require("../utils/datavalidator");
+const {validationResult} = require("express-validator");
+const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+/* GET all users */
+router.get('/', function (req, res, next) {
+    const query = 'SELECT * FROM users;';
+    db.query(query).then(([data, metadata]) => {
+        return res.json(data);
+    }).catch(err => {
+        console.log(err);
+        return res.status(500).json({message: err.message});
+    })
+});
+
+/* POST a new user */
+router.post('/', validateUser(), function (req, res, next) {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty())
+        return res.status(400).json(validationErrors);
+
+    // if validation passed, add user to the db
+    const {username, fullName, email, password, birthdate} = req.body;
+    const insertQuery = 'INSERT INTO users(username, full_name, email, password, birthdate, is_admin) VALUES (?,?,?,?,?,?)';
+    db.execute(insertQuery, [username, fullName, email, password, birthdate, false])
+        .then(([result, _]) => {
+            return res.status(201).json({userId: result.insertId});
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({message: err.message})
+        });
 });
 
 module.exports = router;
