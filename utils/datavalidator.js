@@ -1,24 +1,34 @@
 const {body} = require('express-validator');
 
 const customMessages = {
-    notEmpty: 'This field cannot be empty'
+    notEmpty: 'This field cannot be empty',
+    invalidDate: 'Date must be in the following format: YYYY-MM-DD'
 };
 
 // Date format "YYYY-MM-DD"
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-module.exports.validateAuthor = function (name, birthdate) {
-    const errorMessages = [];
+module.exports.validateAuthor = () => [
+    body('name')
+        .isString()
+        .trim()
+        .notEmpty({errorMessage: customMessages.notEmpty})
+        .isLength({min: 3, max: 255}).withMessage('Name must be between 3 and 255 characters long'),
 
-    if (!name || !birthdate)
-        errorMessages.push("Name or birthdate is empty.");
-    if (name.length < 3)
-        errorMessages.push("Name should be at least 3 characters long.")
-    if (isNaN(Date.parse(birthdate)))
-        errorMessages.push("Date is not in the right format.")
-
-    return errorMessages;
-}
+    body('birthdate')
+        .optional({values: 'falsy'})
+        .isLength({min: 10, max: 10}).withMessage('Birthdate must be 10 characters long')
+        .custom(value => {
+            if (value) {
+                const isRightFormat = dateRegex.test(value);
+                if (!isRightFormat) return false;
+                return !isNaN(Date.parse(value));
+            }
+            return true; // birthdate is optional
+        })
+        .toDate()
+        .withMessage(customMessages.invalidDate)
+]
 
 module.exports.validateUser = () => [
     body('username')
