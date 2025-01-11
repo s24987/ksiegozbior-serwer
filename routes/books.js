@@ -31,4 +31,46 @@ router.post('/', validateBook(), function (req, res, next) {
         });
 });
 
+router.put('/:id', validateBook(), function (req, res, next) {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty())
+        return res.status(400).json(validationErrors);
+
+    const {authorId, title, format, pageCount=null, listeningLength=null, narrator=null, genreId} = req.body;
+    const bookId = req.params.id;
+
+    const updateQuery = 'UPDATE books SET author_id=?, title=?, format=?, page_count=?, listening_length=?, narrator=?, genre_id=? WHERE id = ?';
+    db.execute(updateQuery, [authorId, title.trim(), format, pageCount, listeningLength, narrator.trim(), genreId, bookId])
+        .then(([result, _]) => {
+            if (result.affectedRows === 0) {
+                return res.status(404).json({message: 'Book not found.'});
+            }
+            return res.status(200).send();
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({message: err.message});
+        });
+});
+
+router.delete('/:id', function (req, res, next) {
+    const bookId = req.params.id;
+    if (isNaN(parseInt(bookId)))
+        return res.status(400).json({message: 'Book ID should be an integer'});
+
+    const deleteQuery = 'DELETE FROM books WHERE id=?';
+    db.execute(deleteQuery, [bookId])
+        .then(([result, _]) => {
+            if (result.affectedRows === 0) {
+                return res.status(404).json({message: 'Book not found.'});
+            }
+            return res.status(200).send();
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({message: err.message});
+        });
+});
+
+
 module.exports = router;
