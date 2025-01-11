@@ -167,20 +167,6 @@ module.exports.validateRankingRecord = () => [
 
     body('bookId')
         .isInt({ gt: 0 }).withMessage('Book ID must be a positive integer')
-        .notEmpty().withMessage(customMessages.notEmpty),
-
-    body('rankingId')
-        .isInt({ gt: 0 }).withMessage('Ranking ID must be a positive integer')
-        .notEmpty().withMessage(customMessages.notEmpty),
-];
-
-module.exports.validateRankingRecordUpdate = () => [
-    body('recordPosition')
-        .isInt({ gt: 0 }).withMessage('Record position must be a positive integer')
-        .notEmpty().withMessage(customMessages.notEmpty),
-
-    body('bookId')
-        .isInt({ gt: 0 }).withMessage('Book ID must be a positive integer')
         .notEmpty().withMessage(customMessages.notEmpty)
 ];
 

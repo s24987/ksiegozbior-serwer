@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const {validationResult} = require("express-validator");
-const {validateRanking, validateRankingRecord, validateRankingRecordUpdate, validateRankingRecordDelete} = require("../utils/request-data-validator");
+const {validateRanking, validateRankingRecord, validateRankingRecordDelete} = require("../utils/request-data-validator");
 const {validateDbRankingRecord, validateDbRankingRecordDelete, validateDbRankingRecordUpdate} = require("../utils/db-data-validator");
 
 /* GET all rankings for the logged-in user */
@@ -124,12 +124,10 @@ router.post('/:rankingId', [validateRankingRecord(), validateDbRankingRecord()],
     if (!userLoggedIn)
         return res.status(401).send();
 
-    const {rankingId, bookId, recordPosition} = req.body;
+    const {bookId, recordPosition} = req.body;
     const rankingIdParam = parseInt(req.params.rankingId);
     if (isNaN(rankingIdParam))
         return res.status(400).json({message: 'Ranking ID should be an integer'});
-    if (req.params.rankingId !== rankingId)
-        return res.status(400).json({message: 'Ranking IDs in body and route don\'t match'});
 
     const insertQuery = 'INSERT INTO ranking_records (ranking_id, book_id, user_id, record_position) VALUES(?,?,?, ?)';
     db.execute(insertQuery, [rankingIdParam, bookId, userLoggedIn, recordPosition])
@@ -143,7 +141,7 @@ router.post('/:rankingId', [validateRankingRecord(), validateDbRankingRecord()],
 });
 
 /* UPDATE a ranking record */
-router.put('/:rankingId', [validateRankingRecordUpdate(), validateDbRankingRecordUpdate()], function (req, res, next) {
+router.put('/:rankingId', [validateRankingRecord(), validateDbRankingRecordUpdate()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
         return res.status(401).send();
