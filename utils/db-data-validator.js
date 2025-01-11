@@ -24,3 +24,15 @@ module.exports.validateDbLibrary = () => [
             }
         })
 ];
+
+module.exports.validateDbBookReview = () => [
+    body()
+        .custom(async (bodyData) => {
+            const userId = bodyData.userId;
+            const bookId = bodyData.bookId;
+            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM book_reviews WHERE user_id=? OR book_id=?', [userId, bookId]);
+            if(result[0].count > 0) {
+                throw new Error('This book is already reviewed by user');
+            }
+        })
+];
