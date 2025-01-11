@@ -43,6 +43,16 @@ module.exports.validateDbRankingRecord = () => [
             const userId = req.session.userId;
             const bookId = bodyData.bookId;
             const rankingId = bodyData.rankingId;
+            // check if ranking ID exists
+            const [rankingResult] = await db.query('SELECT COUNT(*) AS countRankings FROM rankings WHERE id=?', [rankingId]);
+            if (rankingResult[0].countRankings === 0) {
+                throw new Error('Invalid ranking ID');
+            }
+            // check if book ID exists
+            const [bookResult] = await db.query('SELECT COUNT(*) AS countBooks FROM books WHERE id=?', [bookId]);
+            if (bookResult[0].countBooks === 0) {
+                throw new Error('Invalid book ID');
+            }
             const [result, _] = await db.query('SELECT COUNT(*) AS count FROM ranking_records WHERE user_id=? AND book_id=? AND ranking_id=?', [userId, bookId, rankingId]);
             if(result[0].count > 0) {
                 throw new Error('This book is already in the ranking');
