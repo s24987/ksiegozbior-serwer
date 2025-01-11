@@ -115,7 +115,7 @@ router.post('/', [validateRanking()], function (req, res, next) {
 });
 
 /* POST a new ranking record */
-router.post('/:rankingId', [validateRankingRecord(), validateDbRankingRecord()], function (req, res, next) {
+router.post('records/:rankingId', [validateRankingRecord(), validateDbRankingRecord()], function (req, res, next) {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
         return res.status(400).json(validationErrors);
@@ -141,7 +141,7 @@ router.post('/:rankingId', [validateRankingRecord(), validateDbRankingRecord()],
 });
 
 /* UPDATE a ranking record */
-router.put('/:rankingId', [validateRankingRecord(), validateDbRankingRecordUpdate()], function (req, res, next) {
+router.put('/records/:rankingId', [validateRankingRecord(), validateDbRankingRecordUpdate()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
         return res.status(401).send();
@@ -188,6 +188,60 @@ router.delete('/:rankingId', [validateRankingRecordDelete(), validateDbRankingRe
 
     const deleteQuery = 'DELETE FROM ranking_records WHERE ranking_id=? AND book_id=? AND user_id=?';
     db.execute(deleteQuery, [rankingIdParam, bookId, userLoggedIn])
+        .then(([result, _]) => {
+            if (result.affectedRows === 0) {
+                return res.status(404).send();
+            }
+            return res.status(200).send();
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({message: err.message});
+        });
+});
+
+/* UPDATE a ranking */
+router.put('/:rankingId', [validateRanking()], function (req, res, next) {
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty())
+        return res.status(400).json(validationErrors);
+
+    const userLoggedIn = req.session.userId;
+    if (!userLoggedIn)
+        return res.status(401).send();
+
+    const rankingIdParam = parseInt(req.params.rankingId);
+    if (isNaN(rankingIdParam))
+        return res.status(400).json({message: 'Ranking ID should be an integer'});
+
+    const {title, numerationType} = req.body;
+    const updateQuery = 'UPDATE rankings SET title=?, numeration_type=? WHERE id=? AND user_id=?';
+    db.execute(updateQuery, [title.trim(), numerationType.trim(), rankingIdParam, userLoggedIn])
+        .then(([result, _]) => {
+            if (result.affectedRows === 0) {
+                return res.status(404).send();
+            }
+            return res.status(200).send();
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({message: err.message});
+        });
+});
+
+/* DELETE a ranking */
+router.delete('/:rankingId', function (req, res, next) {
+    const userLoggedIn = req.session.userId;
+    if (!userLoggedIn)
+        return res.status(401).send();
+
+    const rankingIdParam = parseInt(req.params.rankingId);
+
+    if (isNaN(rankingIdParam))
+        return res.status(400).json({message: 'Ranking ID should be an integer'});
+
+    const deleteQuery = 'DELETE FROM rankings WHERE id=? AND user_id=?';
+    db.execute(deleteQuery, [rankingIdParam, userLoggedIn])
         .then(([result, _]) => {
             if (result.affectedRows === 0) {
                 return res.status(404).send();
