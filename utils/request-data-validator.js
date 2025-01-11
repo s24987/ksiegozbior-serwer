@@ -145,3 +145,31 @@ module.exports.validateBookReview = () => [
         .optional()
         .isLength({ max: 500 }).withMessage('Text must not exceed 500 characters'),
 ];
+
+module.exports.validateRanking = () => [
+    body('title')
+        .isString()
+        .trim()
+        .notEmpty().withMessage(customMessages.notEmpty)
+        .isLength({ min: 3, max: 255 }).withMessage('Title must be between 3 and 255 characters long'),
+
+    body('numerationType')
+        .isString()
+        .trim()
+        .notEmpty().withMessage(customMessages.notEmpty)
+        .isIn(['decimal', 'roman']).withMessage('Numeration type must be either "decimal" or "roman"')
+];
+
+module.exports.validateRankingRecord = () => [
+    body('recordPosition')
+        .isInt({ gt: 0 }).withMessage('Record position must be a positive integer')
+        .notEmpty().withMessage(customMessages.notEmpty),
+
+    body('bookId')
+        .isInt({ gt: 0 }).withMessage('Book ID must be a positive integer')
+        .notEmpty().withMessage(customMessages.notEmpty),
+
+    body('rankingId')
+        .isInt({ gt: 0 }).withMessage('Ranking ID must be a positive integer')
+        .notEmpty().withMessage(customMessages.notEmpty),
+];
