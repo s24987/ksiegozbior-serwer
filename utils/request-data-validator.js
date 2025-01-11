@@ -121,3 +121,13 @@ module.exports.validateLogin = () => [
         .notEmpty({errorMessage: customMessages.notEmpty})
         .hide()
 ];
+
+module.exports.validateLibrary = () => [
+    body('bookId')
+        .isInt({gt: 0}).withMessage('Book ID must be a positive integer')
+        .notEmpty({errorMessage: customMessages.notEmpty}),
+
+    body('wasRead')
+        .isBoolean().withMessage('Was read must be a boolean value (true or false)')
+        .notEmpty({errorMessage: customMessages.notEmpty})
+];

@@ -10,6 +10,7 @@ const usersRouter = require('./routes/users');
 const genresRouter = require('./routes/genres');
 const booksRouter = require('./routes/books');
 const loginRouter = require('./routes/login');
+const libraryRouter = require('./routes/libraries');
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use('/users', usersRouter);
 app.use('/genres', genresRouter);
 app.use('/books', booksRouter);
 app.use('/login', loginRouter);
+app.use('/libraries', libraryRouter);
 
 module.exports = app;
