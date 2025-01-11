@@ -2,6 +2,7 @@ const express = require('express');
 const db = require("../database");
 const {validateUser} = require("../utils/request-data-validator");
 const {validationResult} = require("express-validator");
+const {validateDbUser} = require("../utils/db-data-validator");
 const router = express.Router();
 
 /* GET all users */
@@ -16,7 +17,7 @@ router.get('/', function (req, res, next) {
 });
 
 /* POST a new user */
-router.post('/', validateUser(), function (req, res, next) {
+router.post('/', [validateUser(), validateDbUser()], function (req, res, next) {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
         return res.status(400).json(validationErrors);
