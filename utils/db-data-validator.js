@@ -36,3 +36,16 @@ module.exports.validateDbBookReview = () => [
             }
         })
 ];
+
+module.exports.validateDbRankingRecord = () => [
+    body()
+        .custom(async (bodyData) => {
+            const userId = bodyData.userId;
+            const bookId = bodyData.bookId;
+            const rankingId = bodyData.rankingId;
+            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM ranking_records WHERE user_id=? OR book_id=? OR ranking_id=?', [userId, bookId, rankingId]);
+            if(result[0].count > 0) {
+                throw new Error('This book is already in the ranking');
+            }
+        })
+];
