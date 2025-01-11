@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const {validateBook} = require("../utils/datavalidator");
+const {validateBook} = require("../utils/request-data-validator");
 const {validationResult} = require("express-validator");
 
 router.get('/', function (req, res, next) {

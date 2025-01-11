@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const {validateAuthor} = require("../utils/datavalidator");
+const {validateAuthor} = require("../utils/request-data-validator");
 const {validationResult} = require("express-validator");
 
 /* GET all authors */
