@@ -22,7 +22,7 @@ router.post('/', validateGenre(), function (req, res, next) {
         return res.status(400).json(validationErrors);
 
     const {name} = req.body;
-    db.execute("INSERT INTO genres(name) VALUES (?)", [name])
+    db.execute("INSERT INTO genres(name) VALUES (?)", [name.trim()])
         .then(([result, _]) => {
             return res.status(201).json({genreId: result.insertId});
         })

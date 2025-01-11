@@ -26,7 +26,7 @@ router.post('/', validateAuthor(), function (req, res, next) {
 
     // insert a new author
     const insertQuery = 'INSERT INTO authors(name, birthdate) VALUES(?, ?);';
-    db.execute(insertQuery, [name, birthdate]).then(([result, _]) => {
+    db.execute(insertQuery, [name.trim(), birthdate]).then(([result, _]) => {
         return res.status(201).json({authorId: result.insertId});
     })
         .catch((err) => {

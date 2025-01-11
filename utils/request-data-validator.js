@@ -100,6 +100,8 @@ module.exports.validateBook = () => [
     body('narrator')
         .optional()
         .isString()
+        .trim()
+        .isEmpty({errorMessage: customMessages.notEmpty})
         .isLength({max: 255}).withMessage('Narrator name must not exceed 255 characters'),
 
     body('genreId')

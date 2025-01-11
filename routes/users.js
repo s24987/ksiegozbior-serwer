@@ -25,7 +25,7 @@ router.post('/', [validateUser(), validateDbUser()], function (req, res, next) {
     // if validation passed, add user to the db
     const {username, fullName, email, password, birthdate} = req.body;
     const insertQuery = 'INSERT INTO users(username, full_name, email, password, birthdate, is_admin) VALUES (?,?,?,?,?,?)';
-    db.execute(insertQuery, [username, fullName, email, password, birthdate, false])
+    db.execute(insertQuery, [username.trim(), fullName.trim(), email.trim(), password, birthdate, false])
         .then(([result, _]) => {
             return res.status(201).json({userId: result.insertId});
         })

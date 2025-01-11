@@ -21,7 +21,7 @@ router.post('/', validateBook(), function (req, res, next) {
 
     const {authorId, title, format, pageCount=null, listeningLength=null, narrator=null, genreId} = req.body;
     const insertQuery = 'INSERT INTO books(author_id, title, format, page_count, listening_length, narrator, genre_id) VALUES (?,?,?,?,?,?,?)';
-    db.execute(insertQuery, [authorId, title, format, pageCount, listeningLength, narrator, genreId])
+    db.execute(insertQuery, [authorId, title.trim(), format, pageCount, listeningLength, narrator.trim(), genreId])
         .then(([result, _]) => {
             return res.status(201).json({bookId: result.insertId});
         })
