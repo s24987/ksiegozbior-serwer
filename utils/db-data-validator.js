@@ -15,10 +15,10 @@ module.exports.validateDbUser = () => [
 
 module.exports.validateDbLibrary = () => [
     body()
-        .custom(async (bodyData) => {
-            const userId = bodyData.userId;
+        .custom(async (bodyData, {req}) => {
+            const userId = req.session.userId;
             const bookId = bodyData.bookId;
-            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM libraries WHERE user_id=? OR book_id=?', [userId, bookId]);
+            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM libraries WHERE user_id=? AND book_id=?', [userId, bookId]);
             if(result[0].count > 0) {
                 throw new Error('This book is already in the library');
             }
@@ -27,10 +27,10 @@ module.exports.validateDbLibrary = () => [
 
 module.exports.validateDbBookReview = () => [
     body()
-        .custom(async (bodyData) => {
-            const userId = bodyData.userId;
+        .custom(async (bodyData, {req}) => {
+            const userId = req.session.userId;
             const bookId = bodyData.bookId;
-            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM book_reviews WHERE user_id=? OR book_id=?', [userId, bookId]);
+            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM book_reviews WHERE user_id=? AND book_id=?', [userId, bookId]);
             if(result[0].count > 0) {
                 throw new Error('This book is already reviewed by user');
             }
@@ -39,11 +39,11 @@ module.exports.validateDbBookReview = () => [
 
 module.exports.validateDbRankingRecord = () => [
     body()
-        .custom(async (bodyData) => {
-            const userId = bodyData.userId;
+        .custom(async (bodyData, {req}) => {
+            const userId = req.session.userId;
             const bookId = bodyData.bookId;
             const rankingId = bodyData.rankingId;
-            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM ranking_records WHERE user_id=? OR book_id=? OR ranking_id=?', [userId, bookId, rankingId]);
+            const [result, _] = await db.query('SELECT COUNT(*) AS count FROM ranking_records WHERE user_id=? AND book_id=? AND ranking_id=?', [userId, bookId, rankingId]);
             if(result[0].count > 0) {
                 throw new Error('This book is already in the ranking');
             }
