@@ -131,3 +131,17 @@ module.exports.validateLibrary = () => [
         .isBoolean().withMessage('Was read must be a boolean value (true or false)')
         .notEmpty({errorMessage: customMessages.notEmpty})
 ];
+
+module.exports.validateBookReview = () => [
+    body('bookId')
+        .isInt({ gt: 0 }).withMessage('Book ID must be a positive integer')
+        .notEmpty().withMessage(customMessages.notEmpty),
+
+    body('rating')
+        .isInt({ min: 1, max: 5 }).withMessage('Rating must be an integer between 1 and 5')
+        .notEmpty().withMessage(customMessages.notEmpty),
+
+    body('text')
+        .optional()
+        .isLength({ max: 500 }).withMessage('Text must not exceed 500 characters'),
+];

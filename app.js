@@ -11,6 +11,7 @@ const genresRouter = require('./routes/genres');
 const booksRouter = require('./routes/books');
 const loginRouter = require('./routes/login');
 const libraryRouter = require('./routes/libraries');
+const bookReviewsRouter = require('./routes/book-reviews');
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use('/genres', genresRouter);
 app.use('/books', booksRouter);
 app.use('/login', loginRouter);
 app.use('/libraries', libraryRouter);
+app.use('/book-reviews', bookReviewsRouter);
 
 module.exports = app;
