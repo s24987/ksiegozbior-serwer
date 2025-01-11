@@ -23,6 +23,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/* GET all reviews for a specific book */
 router.get('/:bookId', function (req, res, next) {
     const bookIdParam = req.params.bookId;
     const bookId = parseInt(bookIdParam);
@@ -41,6 +42,7 @@ router.get('/:bookId', function (req, res, next) {
     });
 });
 
+/* POST a new book */
 router.post('/', [validateBookReview(), validateDbBookReview()], function (req, res, next) {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
