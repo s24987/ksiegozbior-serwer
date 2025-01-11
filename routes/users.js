@@ -5,10 +5,13 @@ const {validationResult} = require("express-validator");
 const {validateDbUser} = require("../utils/db-data-validator");
 const router = express.Router();
 
-/* GET all users */
+/* GET user information */
 router.get('/', function (req, res, next) {
-    const query = 'SELECT * FROM users;';
-    db.query(query).then(([data, metadata]) => {
+    const userLoggedIn = req.session.userId;
+    if (!userLoggedIn)
+        return res.status(401).send();
+    const query = 'SELECT username, full_name, email, birthdate FROM users WHERE id=?;';
+    db.query(query, [userLoggedIn]).then(([data, metadata]) => {
         return res.json(data);
     }).catch(err => {
         console.log(err);
