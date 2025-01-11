@@ -36,7 +36,7 @@ router.post('/', [validateLibrary(), validateDbLibrary()], function (req, res, n
     const insertQuery = 'INSERT INTO libraries(user_id, book_id, was_read) VALUES (?,?,?)';
     db.execute(insertQuery, [userLoggedIn, bookId, (wasRead==="0" || wasRead.toLowerCase()==="false")? Boolean('') : Boolean(wasRead)])
         .then(([result, _]) => {
-            return res.status(201).json({libraryId: result.insertId});
+            return res.status(201).send();
         })
         .catch(err => {
             console.log(err);
