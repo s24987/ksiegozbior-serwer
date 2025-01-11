@@ -106,3 +106,16 @@ module.exports.validateBook = () => [
         .isInt({gt: 0}).withMessage('Genre ID must be a positive integer')
         .notEmpty({errorMessage: customMessages.notEmpty})
 ];
+
+module.exports.validateLogin = () => [
+    body('username')
+        .isString()
+        .trim()
+        .notEmpty({errorMessage: customMessages.notEmpty}),
+
+    body('password')
+        .isString()
+        .trim()
+        .notEmpty({errorMessage: customMessages.notEmpty})
+        .hide()
+];
