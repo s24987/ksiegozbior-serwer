@@ -10,7 +10,7 @@ router.get('/', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
         return res.status(401).send();
-    const query = 'SELECT username, full_name, email, birthdate FROM users WHERE id=?;';
+    const query = 'SELECT username, full_name, email, birthdate, is_admin FROM users WHERE id=?;';
     db.query(query, [userLoggedIn]).then(([data, metadata]) => {
         return res.json(data);
     }).catch(err => {
