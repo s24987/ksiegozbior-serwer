@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
         return res.status(401).json({message: 'User not logged in'});
     const query = 'SELECT username, full_name, email, birthdate, is_admin FROM users WHERE id=?;';
     db.query(query, [userLoggedIn]).then(([data, metadata]) => {
-        return res.json(data);
+        return res.json(data[0]);
     }).catch(err => {
         console.log(err);
         return res.status(500).json({message: err.message});
