@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
     const query = 'SELECT username, full_name, email, birthdate, is_admin FROM users WHERE id=?;';
     db.query(query, [userLoggedIn]).then(([data, metadata]) => {
         return res.json(data);
