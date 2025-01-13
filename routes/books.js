@@ -5,7 +5,9 @@ const {validateBook} = require("../utils/request-data-validator");
 const {validationResult} = require("express-validator");
 
 router.get('/', function (req, res, next) {
-    const query = 'SELECT * FROM books;';
+    const query = 'SELECT b.title, b.format, b.page_count, b.listening_length, b.narrator, a.name as author, g.name AS genre FROM books b\n' +
+        'JOIN authors a ON b.author_id = a.id\n' +
+        'JOIN genres g ON b.genre_id = g.id';
     db.query(query).then(([data, metadata]) => {
         return res.json(data);
     }).catch(err => {
