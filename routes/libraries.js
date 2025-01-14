@@ -8,7 +8,7 @@ const {validateDbLibrary} = require("../utils/db-data-validator");
 router.get('/', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const query = 'SELECT b.title, b.format, b.page_count, b.listening_length, b.narrator, g.name AS genre, a.name AS author, l.was_read FROM libraries l\n' +
         'JOIN books b ON l.book_id=b.id\n' +
