@@ -184,7 +184,7 @@ router.put('/records/:rankingId', [validateRankingRecord(), validateDbRankingRec
 });
 
 /* DELETE a ranking record */
-router.delete('/:rankingId', [validateRankingRecordDelete(), validateDbRankingRecordDelete()], function (req, res, next) {
+router.delete('/:rankingId/:rankingId', [validateRankingRecordDelete(), validateDbRankingRecordDelete()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
         return res.status(401).json({message: 'User not logged in'});
