@@ -2,8 +2,16 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const {validationResult} = require("express-validator");
-const {validateRanking, validateRankingRecord, validateRankingRecordDelete} = require("../utils/request-data-validator");
-const {validateDbRankingRecord, validateDbRankingRecordDelete, validateDbRankingRecordUpdate} = require("../utils/db-data-validator");
+const {
+    validateRanking,
+    validateRankingRecord,
+    validateRankingRecordDelete
+} = require("../utils/request-data-validator");
+const {
+    validateDbRankingRecord,
+    validateDbRankingRecordDelete,
+    validateDbRankingRecordUpdate
+} = require("../utils/db-data-validator");
 
 /* GET all rankings for the logged-in user */
 router.get('/', function (req, res, next) {
@@ -11,12 +19,15 @@ router.get('/', function (req, res, next) {
     if (!userLoggedIn)
         return res.status(401).json({message: 'User not logged in'});
 
-    const query = 'SELECT r.id, r.title AS rankingTitle, r.numeration_type AS numerationType, rec.record_position AS recordPosition, b.title AS bookTitle, b.format, a.name AS author, g.name AS genre FROM rankings r\n' +
-        'JOIN ranking_records rec ON r.id = rec.ranking_id\n' +
-        'JOIN books b ON rec.book_id = b.id\n' +
-        'JOIN authors a ON b.author_id = a.id\n' +
-        'JOIN genres g ON b.genre_id = g.id\n' +
-        'WHERE r.user_id=?\n' +
+    const query = 'SELECT r.id, r.title AS rankingTitle, r.numeration_type AS numerationType,\n' +
+        '       rec.record_position AS recordPosition, b.title AS bookTitle,\n' +
+        '       b.format, a.name AS author, g.name AS genre\n' +
+        'FROM rankings r\n' +
+        'LEFT JOIN ranking_records rec ON r.id = rec.ranking_id\n' +
+        'LEFT JOIN books b ON rec.book_id = b.id\n' +
+        'LEFT JOIN authors a ON b.author_id = a.id\n' +
+        'LEFT JOIN genres g ON b.genre_id = g.id\n' +
+        'WHERE r.user_id=? ' +
         'ORDER BY r.id, rec.record_position;';
     db.query(query, [userLoggedIn]).then(([data, metadata]) => {
         if (data.length === 0)
@@ -34,13 +45,14 @@ router.get('/', function (req, res, next) {
                 });
                 currentIndex += 1;
             }
-            mappedData[currentIndex].books.push({
-                recordPosition: record.recordPosition,
-                bookTitle: record.bookTitle,
-                format: record.format,
-                author: record.author,
-                genre: record.genre
-            })
+            if (record.recordPosition != null)
+                mappedData[currentIndex].books.push({
+                    recordPosition: record.recordPosition,
+                    bookTitle: record.bookTitle,
+                    format: record.format,
+                    author: record.author,
+                    genre: record.genre
+                })
         });
         return res.json(mappedData);
     }).catch(err => {
