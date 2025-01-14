@@ -42,7 +42,7 @@ router.post('/', [validateUser(), validateDbUser()], function (req, res, next) {
 router.put('/', [validateUser()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
@@ -68,7 +68,7 @@ router.put('/', [validateUser()], function (req, res, next) {
 router.delete('/', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const deleteQuery = 'DELETE FROM users WHERE id=?';
     db.execute(deleteQuery, [userLoggedIn])

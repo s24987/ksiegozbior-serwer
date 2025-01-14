@@ -9,7 +9,7 @@ const {validateDbRankingRecord, validateDbRankingRecordDelete, validateDbRanking
 router.get('/', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const query = 'SELECT r.id, r.title AS rankingTitle, r.numeration_type AS numerationType, rec.record_position AS recordPosition, b.title AS bookTitle, b.format, a.name AS author, g.name AS genre FROM rankings r\n' +
         'JOIN ranking_records rec ON r.id = rec.ranking_id\n' +
@@ -53,7 +53,7 @@ router.get('/', function (req, res, next) {
 router.get('/:rankingId', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const rankingIdParam = req.params.rankingId;
     const rankingId = parseInt(rankingIdParam);
@@ -100,7 +100,7 @@ router.post('/', [validateRanking()], function (req, res, next) {
 
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const {title, numerationType} = req.body;
     const insertQuery = 'INSERT INTO rankings (title, numeration_type, user_id) VALUES(?,?,?)';
@@ -122,7 +122,7 @@ router.post('records/:rankingId', [validateRankingRecord(), validateDbRankingRec
 
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const {bookId, recordPosition} = req.body;
     const rankingIdParam = parseInt(req.params.rankingId);
@@ -144,7 +144,7 @@ router.post('records/:rankingId', [validateRankingRecord(), validateDbRankingRec
 router.put('/records/:rankingId', [validateRankingRecord(), validateDbRankingRecordUpdate()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
@@ -174,7 +174,7 @@ router.put('/records/:rankingId', [validateRankingRecord(), validateDbRankingRec
 router.delete('/:rankingId', [validateRankingRecordDelete(), validateDbRankingRecordDelete()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
@@ -208,7 +208,7 @@ router.put('/:rankingId', [validateRanking()], function (req, res, next) {
 
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const rankingIdParam = parseInt(req.params.rankingId);
     if (isNaN(rankingIdParam))
@@ -233,7 +233,7 @@ router.put('/:rankingId', [validateRanking()], function (req, res, next) {
 router.delete('/:rankingId', function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
-        return res.status(401).send();
+        return res.status(401).json({message: 'User not logged in'});
 
     const rankingIdParam = parseInt(req.params.rankingId);
 
