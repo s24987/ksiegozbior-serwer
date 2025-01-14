@@ -147,7 +147,7 @@ module.exports.validateBookReview = () => [
 ];
 
 module.exports.validateRanking = () => [
-    body('title')
+    body('rankingTitle')
         .isString()
         .trim()
         .notEmpty().withMessage(customMessages.notEmpty)

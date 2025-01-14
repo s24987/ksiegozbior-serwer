@@ -21,7 +21,7 @@ router.get('/', function (req, res, next) {
 
     const query = 'SELECT r.id, r.title AS rankingTitle, r.numeration_type AS numerationType,\n' +
         '       rec.record_position AS recordPosition, b.title AS bookTitle,\n' +
-        '       b.format, a.name AS author, g.name AS genre\n' +
+        '       b.id AS bookId, b.format, a.name AS author, g.name AS genre\n' +
         'FROM rankings r\n' +
         'LEFT JOIN ranking_records rec ON r.id = rec.ranking_id\n' +
         'LEFT JOIN books b ON rec.book_id = b.id\n' +
@@ -48,6 +48,7 @@ router.get('/', function (req, res, next) {
             if (record.recordPosition != null)
                 mappedData[currentIndex].books.push({
                     recordPosition: record.recordPosition,
+                    bookId: record.bookId,
                     bookTitle: record.bookTitle,
                     format: record.format,
                     author: record.author,
@@ -114,9 +115,9 @@ router.post('/', [validateRanking()], function (req, res, next) {
     if (!userLoggedIn)
         return res.status(401).json({message: 'User not logged in'});
 
-    const {title, numerationType} = req.body;
+    const {rankingTitle, numerationType} = req.body;
     const insertQuery = 'INSERT INTO rankings (title, numeration_type, user_id) VALUES(?,?,?)';
-    db.execute(insertQuery, [title.trim(), numerationType.trim(), userLoggedIn])
+    db.execute(insertQuery, [rankingTitle.trim(), numerationType.trim(), userLoggedIn])
         .then(([result, _]) => {
             return res.status(201).send();
         })
@@ -226,9 +227,9 @@ router.put('/:rankingId', [validateRanking()], function (req, res, next) {
     if (isNaN(rankingIdParam))
         return res.status(400).json({message: 'Ranking ID should be an integer'});
 
-    const {title, numerationType} = req.body;
+    const {rankingTitle, numerationType} = req.body;
     const updateQuery = 'UPDATE rankings SET title=?, numeration_type=? WHERE id=? AND user_id=?';
-    db.execute(updateQuery, [title.trim(), numerationType.trim(), rankingIdParam, userLoggedIn])
+    db.execute(updateQuery, [rankingTitle.trim(), numerationType.trim(), rankingIdParam, userLoggedIn])
         .then(([result, _]) => {
             if (result.affectedRows === 0) {
                 return res.status(404).send();
