@@ -14,6 +14,7 @@ const logoutRouter = require('./routes/logout');
 const libraryRouter = require('./routes/libraries');
 const bookReviewsRouter = require('./routes/book-reviews');
 const rankingsRouter = require('./routes/rankings');
+const statisticsRouter = require('./routes/statistics');
 
 const app = express();
 
@@ -45,5 +46,6 @@ app.use('/logout', logoutRouter);
 app.use('/libraries', libraryRouter);
 app.use('/book-reviews', bookReviewsRouter);
 app.use('/rankings', rankingsRouter);
+app.use('/statistics', statisticsRouter);
 
 module.exports = app;
