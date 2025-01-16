@@ -128,7 +128,7 @@ router.post('/', [validateRanking()], function (req, res, next) {
 });
 
 /* POST a new ranking record */
-router.post('records/:rankingId', [validateRankingRecord(), validateDbRankingRecord()], function (req, res, next) {
+router.post('/records/:rankingId', [validateRankingRecord(), validateDbRankingRecord()], function (req, res, next) {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty())
         return res.status(400).json(validationErrors);
@@ -184,7 +184,7 @@ router.put('/records/:rankingId', [validateRankingRecord(), validateDbRankingRec
 });
 
 /* DELETE a ranking record */
-router.delete('/:rankingId/:rankingId', [validateRankingRecordDelete(), validateDbRankingRecordDelete()], function (req, res, next) {
+router.delete('/records/:rankingId', [validateRankingRecordDelete(), validateDbRankingRecordDelete()], function (req, res, next) {
     const userLoggedIn = req.session.userId;
     if (!userLoggedIn)
         return res.status(401).json({message: 'User not logged in'});

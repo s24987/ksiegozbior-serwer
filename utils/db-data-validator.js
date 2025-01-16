@@ -42,7 +42,7 @@ module.exports.validateDbRankingRecord = () => [
         .custom(async (bodyData, {req}) => {
             const userId = req.session.userId;
             const bookId = bodyData.bookId;
-            const rankingId = bodyData.rankingId;
+            const rankingId = req.params.rankingId;
             // check if ranking ID exists
             const [rankingResult] = await db.query('SELECT COUNT(*) AS countRankings FROM rankings WHERE id=?', [rankingId]);
             if (rankingResult[0].countRankings === 0) {
