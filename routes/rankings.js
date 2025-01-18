@@ -119,7 +119,7 @@ router.post('/', [validateRanking()], function (req, res, next) {
     const insertQuery = 'INSERT INTO rankings (title, numeration_type, user_id) VALUES(?,?,?)';
     db.execute(insertQuery, [rankingTitle.trim(), numerationType.trim(), userLoggedIn])
         .then(([result, _]) => {
-            return res.status(201).send();
+            return res.status(201).json({id: result.insertId});
         })
         .catch(err => {
             console.log(err);
