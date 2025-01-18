@@ -5,11 +5,28 @@ const {validateBook} = require("../utils/request-data-validator");
 const {validationResult} = require("express-validator");
 
 router.get('/', function (req, res, next) {
-    const query = 'SELECT b.id, b.title, b.format, b.page_count, b.listening_length, b.narrator, a.name as author, g.name AS genre FROM books b\n' +
+    const query = 'SELECT b.id, b.title, b.format, b.page_count AS pageCount, b.listening_length AS listeningLength, b.narrator, a.name as author, g.name AS genre FROM books b\n' +
         'JOIN authors a ON b.author_id = a.id\n' +
         'JOIN genres g ON b.genre_id = g.id';
     db.query(query).then(([data, metadata]) => {
         return res.json(data);
+    }).catch(err => {
+        console.log(err);
+        return res.status(500).json({message: err.message});
+    });
+});
+
+router.get('/:id', function (req, res, next) {
+    const bookId = req.params.id;
+
+    const query = 'SELECT b.id, b.title, b.format, b.page_count AS pageCount, b.listening_length AS listeningLength, b.narrator, a.name as author, g.name AS genre FROM books b\n' +
+        'JOIN authors a ON b.author_id = a.id\n' +
+        'JOIN genres g ON b.genre_id = g.id\n' +
+        'WHERE b.id=?';
+    db.query(query, [bookId]).then(([data, metadata]) => {
+        if (data.length > 0)
+            return res.json(data[0]);
+        return res.status(404).json({message: 'Book not found'});
     }).catch(err => {
         console.log(err);
         return res.status(500).json({message: err.message});
